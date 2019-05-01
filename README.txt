@@ -1,4 +1,4 @@
-Processing steps:
+## Processing steps ##
 1. INPUT - Videos named child_<numeric id>_looking.mp4 to be placed in data/videos/
 2. Processing - Run the 'main' python file ET_bulk_pack.py contained in the code folder. To generate clusering based output please run kmeans.py after this step
 3. Output - output_file.csv for each subject is placed in data/input/<numeric id>/. Summary file summary.csv for all videos is located at the parent directory level. output_with_clustering.csv is generated if kmeans.py is executed
