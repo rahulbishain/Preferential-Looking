@@ -16,6 +16,9 @@ The individual extracted frames, face and eye crops and metadata .mat file conta
 4.1 input (extracted frames and metadata placed here)
 4.2 videos (the input videos are to be provided here)
 
+### NOTE ###
+    There are dummy files in data/input, data/videos and WIP folders. Please remove these files before execution.
+
 ## Requirements ##
 1. OS: Ubuntu 16 (or any Linux compatible version)
 2. Python 3.6
