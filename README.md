@@ -1,6 +1,8 @@
 ## About ##
 Preferential looking tasks routinely deploy gaze tracking for social motivation assessments. Here a user is presented with pairs of adjacent social and non-social images or videos on a screen. The aim is to understand the user's preference for social vs non-social videos. Typically such tasks are carried out in restricted or lab settings with a complicated hardware/software setup which require expert handling and user specific calibration. 
+
 With this approach we aim to build an assessment technique which removes dependence of such tasks on cumbersome setup. The approach utilizes state of the art deep neural network <a href="https://github.com/CSAILVision/GazeCapture">iTracker</a>. The video is captured on a low resolution device in home settings. Unlike other approaches for gaze tracking commonly used in such tasks, our approach doesnt require user specific calibration. It is also not dependent on complicated hardware or software, typically utilized by specialized eye trackers in such settings, thus allowing anyone to perform this task at their home on tablet devices. This is an offline approach and only requires the video of the user performing this task, which is captured by the front camera of the tablet.
+
 We observe an accuracy of 91% on a manually labeled dataset collected as part of this project. Also, with a variation of this approach we are able to improve the accuracy to 96%. 
 ## Processing steps ##
 1. INPUT - Videos named child_<numeric id>_looking.mp4 to be placed in data/videos/
