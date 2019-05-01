@@ -22,5 +22,5 @@ The individual extracted frames, face and eye crops and metadata .mat file conta
 ## Requirements ##
 1. OS: Ubuntu 16 (or any Linux compatible version)
 2. Python 3.6
-3. Libraries: openCV 3.2, sklearn, dlib
+3. Libraries: openCV 3.2, sklearn, dlib, PyTorch
 4. Nvidia GPU (8GB or higher)
