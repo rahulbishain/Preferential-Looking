@@ -19,22 +19,16 @@
  
   Created on: Apr, 2018
       Author: Rahul Bishain
-    Filename: sys_call.py
+    Filename: get_external_module.py
 '''
 
+import importlib.util as libutil
 
-from subprocess import call
-import os
+def get_module(external_module, module_path):
+    spec = libutil.spec_from_file_location(external_module, module_path)
+    called = libutil.module_from_spec(spec)
+#print(called)
+    spec.loader.exec_module(called)
+    return called
 
-def sys_call(command_string_list,process_descriptor):
 
-    command_log_file = "commandLog.txt"
-    command_log = open(command_log_file,"a")
-
-    rc = call(command_string_list,stdout=command_log,stderr=command_log)
-    command_log.close()
-
-    if (rc != 0):
-        print("Failed while "+process_descriptor+". Return code = ",rc)
-    else:
-        os.remove(command_log_file)

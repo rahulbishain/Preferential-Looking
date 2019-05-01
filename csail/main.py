@@ -12,8 +12,9 @@ import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 import torchvision.models as models
 
-from csail.ITrackerData import ITrackerData
-from csail.ITrackerModel import ITrackerModel
+#from ITrackerData import ITrackerData
+#from ITrackerModel import ITrackerModel
+from get_external_module import get_module as getmod
 
 '''
 Train/test code for iTracker.
@@ -60,10 +61,14 @@ count = 0
 
 
 
-def main_algo():
+def main():
     global args, best_prec1, weight_decay, momentum
 
-    model = ITrackerModel()
+    external_module_name = "ITrackerModel"
+    external_module_path = "../csail/ITrackerModel.py"
+    model_module = getmod(external_module_name, external_module_path)
+
+    model = model_module.ITrackerModel()
     model = torch.nn.DataParallel(model)
     model.cuda()
     imSize=(224,224)
@@ -85,8 +90,12 @@ def main_algo():
             print('Warning: Could not read checkpoint!');
 
     
-    dataTrain = ITrackerData(split='train', imSize = imSize)
-    dataVal = ITrackerData(split='test', imSize = imSize)
+    external_module_name = "ITrackerData"
+    external_module_path = "../csail/ITrackerData.py"
+    data_module = getmod(external_module_name, external_module_path)
+
+    dataTrain = data_module.ITrackerData(split='train', imSize = imSize)
+    dataVal = data_module.ITrackerData(split='test', imSize = imSize)
    
     train_loader = torch.utils.data.DataLoader(
         dataTrain,
@@ -250,7 +259,7 @@ def validate(val_loader, model, criterion, epoch):
     #print(final_output)
     return np.array(final_output)
 
-CHECKPOINTS_PATH = 'csail/'
+CHECKPOINTS_PATH = '../csail/'
 
 def load_checkpoint(filename='checkpoint.pth.tar'):
     filename = os.path.join(CHECKPOINTS_PATH, filename)
@@ -295,6 +304,6 @@ def adjust_learning_rate(optimizer, epoch):
         param_group['lr'] = lr
 
 
-# if __name__ == "__main__":
-#     main()
-#     print('DONE')
+if __name__ == "__main__":
+    main()
+    print('DONE')

@@ -3,10 +3,11 @@
  assessment of social motivation using gaze
  Copyright (C) 2018 Rahul Bishain and Sharat Chandran
  
- This file can be redistributed and/or modified under the terms of the 
- GNU General Public License as published by the Free Software 
- Foundation, either version 3 of the License, or (at your option) 
- any later version. Further, the main program utilizes the 
+ This Source Code Form is subject to the terms of the Mozilla Public
+ License, v. 2.0. If a copy of the MPL was not distributed with this
+ file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+ Further, the main program (included in folder named 'code') calls the 
  gaze tracking algorithm iTracker (incuded in the folder named 'csail')
  which is governed by its own licensing terms. Please refer to 
  https://github.com/CSAILVision/GazeCapture for its license agreement
@@ -16,14 +17,11 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  GNU General Public License for more details.
  
- You should have received a copy of the GNU General Public License
- along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-
   Created on: Apr, 2018
       Author: Rahul Bishain
-    Filename: ET_bulk_pack.py
+    Filename: main.py
 '''
+
 
 import time
 #tic = time.perf_counter()
@@ -32,12 +30,12 @@ from checkExistence import already_exists
 from get_crops import get_crops
 import os
 from sys_call import sys_call
-from csail.main_algo import main_algo
 import numpy as np
 from mat_handler import load_mat
-
+from get_external_module import get_module as getmod
 # Detached the part for clustering based prediction"
 # from kmeans import getClusterPreds
+
 
 # Provide location of the source videos 
 src_path = "../data/videos/"
@@ -126,7 +124,10 @@ for folder in os.listdir(input_folder):
     sys_call(command_string_list,process_descriptor)
 
     print("Final Calculation --- Child ",folder)
-    final_output = main_algo()
+    external_module = "main"
+    external_module_path = "../csail/main.py"
+    external_module = getmod(external_module, external_module_path)
+    final_output = external_module.main()
     gaze_prediction = np.zeros([final_output.shape[0],1])
 
     # Customize this part to predict Left or Right from predicted coordinates

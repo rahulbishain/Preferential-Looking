@@ -33,7 +33,7 @@ NOTE: This file has been slightly modified to be used with Preferential looking 
 '''
 
 DATASET_PATH = '../data/input/'
-MEAN_PATH = 'csail/'
+MEAN_PATH = '../csail/'
 META_PATH = '../WIP/metadata.mat'
 
 def loadMetadata(filename, silent = False):

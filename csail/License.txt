@@ -1,0 +1,3 @@
+The files in this folder (named 'csail') are subject to 
+license terms as prescribed in the LICENSE.md file 
+at https://github.com/CSAILVision/GazeCapture

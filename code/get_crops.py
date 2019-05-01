@@ -3,10 +3,11 @@
  assessment of social motivation using gaze
  Copyright (C) 2018 Rahul Bishain and Sharat Chandran
  
- This file can be redistributed and/or modified under the terms of the 
- GNU General Public License as published by the Free Software 
- Foundation, either version 3 of the License, or (at your option) 
- any later version. Further, the main program utilizes the 
+ This Source Code Form is subject to the terms of the Mozilla Public
+ License, v. 2.0. If a copy of the MPL was not distributed with this
+ file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+ Further, the main program (included in folder named 'code') calls the 
  gaze tracking algorithm iTracker (incuded in the folder named 'csail')
  which is governed by its own licensing terms. Please refer to 
  https://github.com/CSAILVision/GazeCapture for its license agreement
@@ -16,14 +17,11 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  GNU General Public License for more details.
  
- You should have received a copy of the GNU General Public License
- along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-
   Created on: Apr, 2018
       Author: Rahul Bishain
     Filename: get_crops.py
 '''
+
 
 from get_landmarks import get_landmark_array
 import dlib
