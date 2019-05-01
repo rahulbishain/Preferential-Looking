@@ -24,3 +24,6 @@ The individual extracted frames, face and eye crops and metadata .mat file conta
 2. Python 3.6
 3. Libraries: openCV 3.2, sklearn, dlib, PyTorch
 4. Nvidia GPU (8GB or higher)
+
+## Licenses ##
+    Please refer to License files in respective folders ('code' and 'csail')
