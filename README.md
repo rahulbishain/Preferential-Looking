@@ -5,8 +5,8 @@ With this approach we aim to build an assessment technique which removes depende
 
 We observe an accuracy of 91% on a manually labeled dataset collected as part of this project. Also, with a variation of this approach we are able to improve the accuracy to 96%. 
 ## Processing steps ##
-1. INPUT - Videos named child_<numeric id>_looking.mp4 to be placed in data/videos/
-2. Processing - Run the 'main' python file ET_bulk_pack.py contained in the code folder. To generate clusering based output please run kmeans.py after this step
+1. INPUT - Videos named child_\<numeric id\>_looking.mp4 to be placed in data/videos/
+2. Processing - Run the 'main' python file in the code folder. To generate clusering based output please run kmeans.py after this step
 3. Output - output_file.csv for each subject is placed in data/input/'numeric id'/. Summary file summary.csv for all videos is located at the parent directory level. output_with_clustering.csv is generated if kmeans.py is executed
 The individual extracted frames, face and eye crops and metadata .mat file containing binary grid information are also placed here. (A flag for skipping frame extraction is provided in the 'main' file in case frame extraction is not required. The face and eye crop extraction will be skipped in case metadat file is already present in this folder)
 
