@@ -1,3 +1,10 @@
+''' 
+To process Matlab file containing dataset metadata
+ 
+  Created on: Sep, 2019
+      Author: Abhishek Chakraborty
+    Filename: process_metadata.py
+'''
 
 import os
 import scipy.io as sio
