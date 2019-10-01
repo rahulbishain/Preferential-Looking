@@ -28,7 +28,7 @@ def read_metadata(metadataFilePath):
     return metadata
 
 def save_metadata(metadataFilePath, content):
-    sio.savemat(metadataFilePath, metadata)
+    sio.savemat(metadataFilePath, metadata, do_compression=True)
 
 def get_labels(metadata, deviceW, deviceH, cameraX, cameraY):
     

@@ -38,7 +38,7 @@ def save_mat(np_array):
     temp_dict['labelTrain']=np_array[:,9:10].astype(bool)        
     temp_dict['labelVal']=np_array[:,10:].astype(bool)           
     # print("dict size ",len(temp_dict))
-    sio.savemat('metadata',temp_dict)
+    sio.savemat('metadata',temp_dict,do_compression=True)
 
 def load_mat(file_path):
     temp_dict = sio.loadmat(file_path+'metadata.mat')
