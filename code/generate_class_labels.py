@@ -1,8 +1,8 @@
 ''' 
 to generate Classification Labels for Reference Metadata
 Input:
-W - Width of device
-H - Height of device
+W - Width of device screen
+H - Height of device screen
 camX - location of camera along width from left
 camY - location of camera along height from top
 Output:
@@ -37,15 +37,15 @@ def get_labels(metadata, deviceW, deviceH, cameraX, cameraY):
     yCam = metadata['labelDotYCam']
 
     # check outside
-    outside_left = xCam - cameraX < 0
-    outside_right = xCam - cameraX > deviceW
-    outside_up = yCam - (deviceH - cameraY) > deviceH
-    outside_down = yCam - (deviceH - cameraY) < 0
+    outside_left = xCam + cameraX < 0
+    outside_right = xCam + cameraX > deviceW
+    outside_up = yCam + (deviceH - cameraY) > deviceH
+    outside_down = yCam + (deviceH - cameraY) < 0
     outside_all = np.hstack([outside_left, outside_right, outside_up, outside_down])
     outside = np.logical_or.reduce(outside_all.transpose().tolist())
 
     # check L, R
-    isLeft = xCam - cameraX < deviceW/2
+    isLeft = xCam + cameraX < deviceW/2
 
     # assign labels
     labels = np.zeros(xCam.shape, dtype=np.int)
