@@ -37,16 +37,15 @@ def get_labels(metadata, deviceW, deviceH, cameraX, cameraY):
     yCam = metadata['labelDotYCam']
 
     # check outside
-    outside_left = xCam < -deviceW/2
-    outside_right = xCam > deviceW/2
-    outside_up = yCam < -deviceH/2
-    outside_down = yCam > deviceH/2
+    outside_left = xCam - cameraX < 0
+    outside_right = xCam - cameraX > deviceW
+    outside_up = yCam - (deviceH - cameraY) > deviceH
+    outside_down = yCam - (deviceH - cameraY) < 0
     outside_all = np.hstack([outside_left, outside_right, outside_up, outside_down])
     outside = np.logical_or.reduce(outside_all.transpose().tolist())
-    # print(outside_left.shape, outside_all.shape, outside.shape)
 
     # check L, R
-    isLeft = xCam < (cameraX - deviceW/2)
+    isLeft = xCam - cameraX < deviceW/2
 
     # assign labels
     labels = np.zeros(xCam.shape, dtype=np.int)
@@ -65,7 +64,7 @@ if __name__ == "__main__":
     cameraY = float(sys.argv[4]) # Device Camera location along height from top
 
     # read metadata file
-    METADATA_FILE_PATH = '../../temp/reference_metadata.mat'
+    METADATA_FILE_PATH = '../../reference_metadata.mat'
     metadata = read_metadata(METADATA_FILE_PATH)
 
     # get labels
@@ -73,5 +72,5 @@ if __name__ == "__main__":
 
     # write labels
     metadata['labelDotLR'] = labels
-    METADATA_SAVE_PATH = '../../temp/reference_metadata_with_labels.mat'
+    METADATA_SAVE_PATH = '../../reference_metadata_with_labels.mat'
     save_metadata(METADATA_SAVE_PATH, metadata)
