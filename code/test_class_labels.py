@@ -15,7 +15,7 @@ def get_test_args():
 def get_test_metadata():
     # create Grid
     xCam = np.array([-3, -1, 1, 3, 7])
-    yCam = np.array([-4, -1, 0.5, 2])
+    yCam = np.array([2, 0.5, -1, -4])
     x_ind, y_ind = np.meshgrid(xCam, yCam)
     x_ind = x_ind.reshape(-1, 1)
     y_ind = y_ind.reshape(-1, 1)

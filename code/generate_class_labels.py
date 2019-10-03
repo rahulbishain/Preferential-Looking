@@ -1,15 +1,16 @@
 ''' 
-to generate Classification Labels for Reference Metadata
+to generate (Left, Right) Classification Labels for Reference Metadata
 Input:
 W - Width of device screen
 H - Height of device screen
-camX - location of camera along width from left
-camY - location of camera along height from top
+camX - directed distance of camera along width from left
+camY - directed distance of camera along height from top
+Note: (camX, camY) have been provided with screen top-left as origin. Also, like MATLAB, it assumes flipped Y-axis
 Output:
 new field, 'labelDotLR' in Metadata with values
-0 - Gaze Out
-1 - Left
-2 - Right
+0 : Gaze Out
+1 : Left
+2 : Right
  
   Created on: Sep, 2019
       Author: Abhishek Chakraborty
