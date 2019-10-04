@@ -23,12 +23,10 @@ import numpy as np
 import sys
 
 def read_metadata(metadataFilePath):
-    # metadataFileName = 'reference_metadata.mat'
-    # metadataFilePath = os.path.join(datasetPath, metadataFileName)
     metadata = sio.loadmat(metadataFilePath)
     return metadata
 
-def save_metadata(metadataFilePath, content):
+def save_metadata(metadataFilePath, metadata):
     sio.savemat(metadataFilePath, metadata, do_compression=True)
 
 def get_labels(metadata, deviceW, deviceH, cameraX, cameraY):
@@ -73,5 +71,5 @@ if __name__ == "__main__":
 
     # write labels
     metadata['labelDotLR'] = labels
-    METADATA_SAVE_PATH = '../../reference_metadata_with_labels.mat'
+    METADATA_SAVE_PATH = '../../reference_metadata_LR.mat'
     save_metadata(METADATA_SAVE_PATH, metadata)

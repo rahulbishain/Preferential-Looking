@@ -75,5 +75,5 @@ if __name__ == "__main__":
 
     # write labels
     metadata['labelDotLCR'] = labels
-    METADATA_SAVE_PATH = '../../reference_metadata_with_labels.mat'
+    METADATA_SAVE_PATH = '../../reference_metadata_LCR.mat'
     save_metadata(METADATA_SAVE_PATH, metadata)
