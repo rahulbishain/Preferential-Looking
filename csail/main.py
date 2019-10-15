@@ -106,9 +106,8 @@ def main():
         dataVal,
         batch_size=batch_size, shuffle=False,
         num_workers=workers, pin_memory=True)
-
-
-    criterion = nn.MSELoss().cuda()
+    
+    criterion = nn.CrossEntropyLoss().cuda()
 
     optimizer = torch.optim.SGD(model.parameters(), lr,
                                 momentum=momentum,
@@ -151,7 +150,7 @@ def train(train_loader, model, criterion,optimizer, epoch):
 
     end = time.time()
 
-    for i, (row, imFace, imEyeL, imEyeR, faceGrid, gaze) in enumerate(train_loader):
+    for i, (row, imFace, imEyeL, imEyeR, faceGrid, gazeLabel) in enumerate(train_loader):
         
         # measure data loading time
         data_time.update(time.time() - end)
@@ -159,23 +158,25 @@ def train(train_loader, model, criterion,optimizer, epoch):
         imEyeL = imEyeL.cuda(async=True)
         imEyeR = imEyeR.cuda(async=True)
         faceGrid = faceGrid.cuda(async=True)
-        gaze = gaze.cuda(async=True)
+        gazeLabel = gazeLabel.cuda(async=True)
         
         imFace = torch.autograd.Variable(imFace)
         imEyeL = torch.autograd.Variable(imEyeL)
         imEyeR = torch.autograd.Variable(imEyeR)
         faceGrid = torch.autograd.Variable(faceGrid)
-        gaze = torch.autograd.Variable(gaze)
+        gazeLabel = torch.autograd.Variable(gazeLabel)
+
+        # zero gradients
+        optimizer.zero_grad()
 
         # compute output
         output = model(imFace, imEyeL, imEyeR, faceGrid)
 
-        loss = criterion(output, gaze)
+        loss = criterion(output, gazeLabel)
         
         losses.update(loss.data[0], imFace.size(0))
 
         # compute gradient and do SGD step
-        optimizer.zero_grad()
         loss.backward()
         optimizer.step()
 
@@ -208,21 +209,21 @@ def validate(val_loader, model, criterion, epoch):
     #------------------------------------------------------------------>>>>>>>>>>>>>>>>>>>>>
 
     Index = 0
-    for i, (row, imFace, imEyeL, imEyeR, faceGrid, gaze) in enumerate(val_loader):
+    for i, (row, imFace, imEyeL, imEyeR, faceGrid, gazeLabel) in enumerate(val_loader):
         # measure data loading time
         data_time.update(time.time() - end)
         imFace = imFace.cuda(async=True)
         imEyeL = imEyeL.cuda(async=True)
         imEyeR = imEyeR.cuda(async=True)
         faceGrid = faceGrid.cuda(async=True)
-        gaze = gaze.cuda(async=True)
+        gazeLabel = gazeLabel.cuda(async=True)
         
         imFace = torch.autograd.Variable(imFace, volatile = True)
         imEyeL = torch.autograd.Variable(imEyeL, volatile = True)
         imEyeR = torch.autograd.Variable(imEyeR, volatile = True)
         faceGrid = torch.autograd.Variable(faceGrid, volatile = True)
-        gaze = torch.autograd.Variable(gaze, volatile = True)
-
+        gazeLabel = torch.autograd.Variable(gazeLabel, volatile = True)
+        
         # compute output
         output = model(imFace, imEyeL, imEyeR, faceGrid)
         #----------------------------------------------------------------->>>>>>>>>>>>>>
@@ -230,28 +231,35 @@ def validate(val_loader, model, criterion, epoch):
         final_output = torch.cat((final_output,torch.cuda.FloatTensor(output.data)))
         #print("final_output shape is",final_output.shape)
         #----------------------------------------------------------------->>>>>>>>>>>>>>
-        loss = criterion(output, gaze)
-        
-        lossLin = output - gaze
-        lossLin = torch.mul(lossLin,lossLin)
-        lossLin = torch.sum(lossLin,1)
-        lossLin = torch.mean(torch.sqrt(lossLin))
+        gazeLabel = gazeLabel.squeeze()
+        loss = criterion(output, gazeLabel)
 
-        losses.update(loss.data[0], imFace.size(0))
-        lossesLin.update(lossLin.data[0], imFace.size(0))
-     
+        # gazeLabel = gazeLabel.float()
+        # lossLin = output - gazeLabel
+        # lossLin = torch.mul(lossLin,lossLin)
+        # lossLin = torch.sum(lossLin,1)
+        # lossLin = torch.mean(torch.sqrt(lossLin))
+
+        # losses.update(loss.data[0], imFace.size(0))
+
+        # lossesLin.update(lossLin.data[0], imFace.size(0))
+    
         # compute gradient and do SGD step
         # measure elapsed time
         batch_time.update(time.time() - end)
         end = time.time()
 
 
-        print('Epoch (val): [{0}][{1}/{2}]\t'
-                  'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
-                  'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-                  'Error L2 {lossLin.val:.4f} ({lossLin.avg:.4f})\t'.format(
-                    epoch, i, len(val_loader), batch_time=batch_time,
-                   loss=losses,lossLin=lossesLin))
+        # print('Epoch (val): [{0}][{1}/{2}]\t'
+        #           'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
+        #           'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
+        #           'Error L2 {lossLin.val:.4f} ({lossLin.avg:.4f})\t'.format(
+        #             epoch, i, len(val_loader), batch_time=batch_time,
+        #            loss=losses,lossLin=lossesLin))
+
+        # print('Epoch (val): [{0}][{1}/{2}]\t'
+        #           'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
+        #           'Loss {loss.val:.4f} ({loss.avg:.4f})\t'.format( epoch, i, len(val_loader), batch_time=batch_time, loss=losses))
 
     
     # outfil.close()

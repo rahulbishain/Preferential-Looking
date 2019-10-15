@@ -35,6 +35,7 @@ NOTE: This file has been slightly modified to be used with Preferential looking 
 DATASET_PATH = '../data/input/'
 MEAN_PATH = '../csail/'
 META_PATH = '../WIP/metadata.mat'
+LABEL_PATH = '../WIP/reference_metadata_LR.mat'
 
 def loadMetadata(filename, silent = False):
     try:
@@ -75,7 +76,7 @@ class ITrackerData(data.Dataset):
         self.faceMean = loadMetadata(os.path.join(MEAN_PATH, 'mean_face_224.mat'))['image_mean']
         self.eyeLeftMean = loadMetadata(os.path.join(MEAN_PATH, 'mean_left_224.mat'))['image_mean']
         self.eyeRightMean = loadMetadata(os.path.join(MEAN_PATH, 'mean_right_224.mat'))['image_mean']
-        
+        self.labeldata = loadMetadata(LABEL_PATH)
 
         self.transformFace = transforms.Compose([
             transforms.Scale(self.imSize),
@@ -142,16 +143,16 @@ class ITrackerData(data.Dataset):
         imEyeL = self.transformEyeL(imEyeL)
         imEyeR = self.transformEyeR(imEyeR)
 
-        gaze = np.array([self.metadata['labelDotXCam'][index], self.metadata['labelDotYCam'][index]], np.float32)
+        gazeLabel = np.array([self.labeldata['labelDotLR'][index]], np.int)
 
         faceGrid = self.makeGrid(self.metadata['labelFaceGrid'][index,:])
 
         # to tensor
         row = torch.LongTensor([int(index)])
         faceGrid = torch.FloatTensor(faceGrid)
-        gaze = torch.FloatTensor(gaze)
+        gazeLabel = torch.LongTensor(gazeLabel)
 
-        return row, imFace, imEyeL, imEyeR, faceGrid, gaze
+        return row, imFace, imEyeL, imEyeR, faceGrid, gazeLabel
     
         
     def __len__(self):
