@@ -1,12 +1,14 @@
-import torch.utils.data as data
-import scipy.io as sio
-from PIL import Image
 import os
 import os.path
-import torchvision.transforms as transforms
-import torch
-import numpy as np
 import re
+
+import numpy as np
+import scipy.io as sio
+from PIL import Image
+
+import torch
+import torch.utils.data as data
+import torchvision.transforms as transforms
 
 '''
 Data loader for the iTracker.
@@ -32,10 +34,15 @@ Booktitle = {IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}
 NOTE: This file has been slightly modified to be used with Preferential looking code - Rahul Bishain
 '''
 
-DATASET_PATH = '../data/input/'
+# DATASET_PATH = '../data/input/'
+# MEAN_PATH = '../csail/'
+# META_PATH = '../WIP/metadata.mat'
+# LABEL_PATH = '../WIP/metadata_LR.mat'
+
+DATASET_PATH = '../../temp/'
 MEAN_PATH = '../csail/'
-META_PATH = '../WIP/metadata.mat'
-LABEL_PATH = '../WIP/reference_metadata_LR.mat'
+META_PATH = '../../temp/revisedMetaFinal.mat'
+LABEL_PATH = '../../Labels/metadata_LR.mat'
 
 def loadMetadata(filename, silent = False):
     try:
@@ -152,7 +159,7 @@ class ITrackerData(data.Dataset):
         faceGrid = torch.FloatTensor(faceGrid)
         gazeLabel = torch.LongTensor(gazeLabel)
 
-        return row, imFace, imEyeL, imEyeR, faceGrid, gazeLabel
+        return row, imFace, imEyeL, imEyeR, faceGrid, gazeLabel, self.metadata['labelRecNum'][index], self.metadata['frameIndex'][index]
     
         
     def __len__(self):

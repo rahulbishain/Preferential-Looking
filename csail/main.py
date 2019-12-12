@@ -41,8 +41,8 @@ NOTE: This file has been slightly modified to be used with Preferential looking 
 '''
 
 # Change there flags to control what happens.
-doLoad = True # Load checkpoint at the beginning
-doTest = True # Only run test, no training
+doLoad = False # Load checkpoint at the beginning
+doTest = False # Only run test, no training
 
 workers = 8
 epochs = 100
@@ -87,7 +87,7 @@ def main():
             epoch = saved['epoch']
             best_prec1 = saved['best_prec1']
         else:
-            print('Warning: Could not read checkpoint!');
+            print('Warning: Could not read checkpoint!')
 
     
     external_module_name = "ITrackerData"
@@ -138,7 +138,6 @@ def main():
             'best_prec1': best_prec1,
         }, is_best)
 
-
 def train(train_loader, model, criterion,optimizer, epoch):
     global count
     batch_time = AverageMeter()
@@ -150,7 +149,7 @@ def train(train_loader, model, criterion,optimizer, epoch):
 
     end = time.time()
 
-    for i, (row, imFace, imEyeL, imEyeR, faceGrid, gazeLabel) in enumerate(train_loader):
+    for i, (row, imFace, imEyeL, imEyeR, faceGrid, gazeLabel, recordNum, frameIndex) in enumerate(train_loader):
         
         # measure data loading time
         data_time.update(time.time() - end)
@@ -172,9 +171,11 @@ def train(train_loader, model, criterion,optimizer, epoch):
         # compute output
         output = model(imFace, imEyeL, imEyeR, faceGrid)
 
+        gazeLabel = gazeLabel.squeeze()
         loss = criterion(output, gazeLabel)
         
-        losses.update(loss.data[0], imFace.size(0))
+        # losses.update(loss.cpu().data[0], imFace.cpu().size(0))
+        losses.update(loss.item(), imFace.size(0))
 
         # compute gradient and do SGD step
         loss.backward()
@@ -187,11 +188,13 @@ def train(train_loader, model, criterion,optimizer, epoch):
         count=count+1
 
         print('Epoch (train): [{0}][{1}/{2}]\t'
+                #   '[{3}/{4}]\t\t'
                   'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
                   'Data {data_time.val:.3f} ({data_time.avg:.3f})\t'
                   'Loss {loss.val:.4f} ({loss.avg:.4f})\t'.format(
-                   epoch, i, len(train_loader), batch_time=batch_time,
-                   data_time=data_time, loss=losses))
+                   epoch, i, len(train_loader), 
+                #    ','.join(map(str, recordNum.numpy())), ','.join(map(str, frameIndex.numpy())),
+                   batch_time=batch_time, data_time=data_time, loss=losses))
 
 def validate(val_loader, model, criterion, epoch):
     global count_test
@@ -206,10 +209,11 @@ def validate(val_loader, model, criterion, epoch):
     #------------------------------------------------------------------>>>>>>>>>>>>>>>>>>>>>
     # outfil = open('out1.csv','wb')
     final_output = torch.cuda.FloatTensor(0)
+    final_loss = torch.cuda.FloatTensor(0)
     #------------------------------------------------------------------>>>>>>>>>>>>>>>>>>>>>
 
     Index = 0
-    for i, (row, imFace, imEyeL, imEyeR, faceGrid, gazeLabel) in enumerate(val_loader):
+    for i, (row, imFace, imEyeL, imEyeR, faceGrid, gazeLabel, recordNum, frameIndex) in enumerate(val_loader):
         # measure data loading time
         data_time.update(time.time() - end)
         imFace = imFace.cuda(async=True)
@@ -226,13 +230,13 @@ def validate(val_loader, model, criterion, epoch):
         
         # compute output
         output = model(imFace, imEyeL, imEyeR, faceGrid)
-        #----------------------------------------------------------------->>>>>>>>>>>>>>
-        # np.savetxt(outfil,output.data)
-        final_output = torch.cat((final_output,torch.cuda.FloatTensor(output.data)))
-        #print("final_output shape is",final_output.shape)
-        #----------------------------------------------------------------->>>>>>>>>>>>>>
+        # final_output = torch.cat((final_output,torch.cuda.FloatTensor(output.data)))
         gazeLabel = gazeLabel.squeeze()
         loss = criterion(output, gazeLabel)
+
+
+
+        # final_loss = torch.cat((final_loss,torch.cuda.FloatTensor([loss.data])))
 
         # gazeLabel = gazeLabel.float()
         # lossLin = output - gazeLabel
@@ -240,7 +244,7 @@ def validate(val_loader, model, criterion, epoch):
         # lossLin = torch.sum(lossLin,1)
         # lossLin = torch.mean(torch.sqrt(lossLin))
 
-        # losses.update(loss.data[0], imFace.size(0))
+        losses.update(loss.item(), imFace.size(0))
 
         # lossesLin.update(lossLin.data[0], imFace.size(0))
     
@@ -257,15 +261,18 @@ def validate(val_loader, model, criterion, epoch):
         #             epoch, i, len(val_loader), batch_time=batch_time,
         #            loss=losses,lossLin=lossesLin))
 
-        # print('Epoch (val): [{0}][{1}/{2}]\t'
-        #           'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
-        #           'Loss {loss.val:.4f} ({loss.avg:.4f})\t'.format( epoch, i, len(val_loader), batch_time=batch_time, loss=losses))
+        print('Epoch (val)  : [{0}][{1}/{2}]\t'
+                # '[{3}/{4}]\t'
+                'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
+                'Loss {loss.val:.4f} ({loss.avg:.4f})\t'.format( epoch, i, len(val_loader), 
+                # ','.join(map(str, recordNum.numpy())), ','.join(map(str, frameIndex.numpy())),
+                batch_time=batch_time, loss=losses))
 
     
     # outfil.close()
     # return lossesLin.avg
     #print(final_output)
-    return np.array(final_output)
+    return losses.avg
 
 CHECKPOINTS_PATH = '../csail/'
 
