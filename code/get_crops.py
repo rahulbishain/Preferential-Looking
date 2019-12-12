@@ -123,6 +123,6 @@ def get_crops(frames_folder,crops_folder,folder_no):
     temp_dict['labelTrain']=metadata[:,9:10].astype(bool)
     temp_dict['labelVal']=metadata[:,10:].astype(bool)
     print("dict size ",len(temp_dict))
-    sio.savemat('metadata',temp_dict)
+    sio.savemat('metadata.mat',temp_dict)
 
     return np.array(error_list),np.array(result_list)

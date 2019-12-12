@@ -117,17 +117,18 @@ for folder in os.listdir(input_folder):
     # load metatdata as numpy array to be written into the output file
     csail_metadata = load_mat(input_folder+folder+"/")
 
-    # Run the iTracler pytorch code. Before that transfer the images and metadata to a WIP folder
-    # Copy respective metadata file to wip_folder
-    command_string_list = ["cp", input_folder+folder+"/"+metafile,wip_folder]
-    process_descriptor = "copying metadata.mat file to WIP folder"
-    sys_call(command_string_list,process_descriptor)
+    # # Run the iTracler pytorch code. Before that transfer the images and metadata to a WIP folder
+    # # Copy respective metadata file to wip_folder
+    # command_string_list = ["cp", input_folder+folder+"/"+metafile,wip_folder]
+    # process_descriptor = "copying metadata.mat file to WIP folder"
+    # sys_call(command_string_list,process_descriptor)
 
     print("Final Calculation --- Child ",folder)
     external_module = "main"
     external_module_path = "../csail/main.py"
     external_module = getmod(external_module, external_module_path)
     final_output = external_module.main()
+    # final_output = final_output.reshape(-1,1) # undoing squeeze()
     gaze_prediction = np.zeros([final_output.shape[0],1])
 
     # Customize this part to predict Left or Right from predicted coordinates
@@ -160,10 +161,10 @@ for folder in os.listdir(input_folder):
     temp_fil.close()
 
 
-    # Empty out wip_folder
-    command_string_list = ["rm", wip_folder+metafile]
-    process_descriptor = "clearing out WIP folder"
-    sys_call(command_string_list,process_descriptor)
+    # # Empty out wip_folder
+    # command_string_list = ["rm", wip_folder+metafile]
+    # process_descriptor = "clearing out WIP folder"
+    # sys_call(command_string_list,process_descriptor)
 
     # Write summary file
     child_id = int(folder) 
