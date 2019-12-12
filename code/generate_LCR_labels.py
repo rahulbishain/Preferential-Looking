@@ -67,7 +67,7 @@ if __name__ == "__main__":
     xRight = float(sys.argv[6]) # Right Region boundary
 
     # read metadata file
-    METADATA_FILE_PATH = '../../reference_metadata.mat'
+    METADATA_FILE_PATH = '../../temp/revisedMetaFinal.mat'
     metadata = read_metadata(METADATA_FILE_PATH)
 
     # get labels
@@ -75,5 +75,5 @@ if __name__ == "__main__":
 
     # write labels
     metadata['labelDotLCR'] = labels
-    METADATA_SAVE_PATH = '../../reference_metadata_LCR.mat'
+    METADATA_SAVE_PATH = 'metadata_LCR.mat'
     save_metadata(METADATA_SAVE_PATH, metadata)
