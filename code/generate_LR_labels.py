@@ -63,7 +63,8 @@ if __name__ == "__main__":
     cameraY = float(sys.argv[4]) # Device Camera location along height from top
 
     # read metadata file
-    METADATA_FILE_PATH = '../../temp/revisedMetaFinal.mat'
+    # METADATA_FILE_PATH = '../../temp/revisedMetaFinal.mat'
+    METADATA_FILE_PATH = '../../resized/reference_metadata.mat'
     metadata = read_metadata(METADATA_FILE_PATH)
 
     # get labels
@@ -71,5 +72,6 @@ if __name__ == "__main__":
 
     # write labels
     metadata['labelDotLR'] = labels
-    METADATA_SAVE_PATH = 'metadata_LR.mat'
+    # METADATA_SAVE_PATH = 'metadata_LR.mat'
+    METADATA_SAVE_PATH = 'resized_metadata_LR.mat'
     save_metadata(METADATA_SAVE_PATH, metadata)
