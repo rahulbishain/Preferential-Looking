@@ -30,18 +30,15 @@ def getMetadataForIndices(metadataFileDict, indices):
     return subMetadata
 
 # sample by given fraction
-def sampleMetadata(metadataFileDict, sampleFraction=SAMPLE_FRACTION):
+def getMetadataSamplingIndices(metadataFileDict, sampleFraction=SAMPLE_FRACTION):
     # get indices
-    binaryLabels = ['labelTrain', 'labelVal', 'labelTest']
+    dataSubsetKeys = ['labelTrain', 'labelVal', 'labelTest']
     labelSampledIndices = {}
-    for label in binaryLabels:
+    for label in dataSubsetKeys:
         labelSampledIndices[label] = getBinaryLabelSample(metadataFileDict, label, sampleFraction)
     sampledIndices = np.hstack(labelSampledIndices.values())
 
-    # sample
-    sampledMetadata = getMetadataForIndices(metadataFileDict, sampledIndices)
-
-    return sampledMetadata
+    return sampledIndices
 
 def readMetadata(metadataFilePath):
     metadata = sio.loadmat(metadataFilePath)
@@ -61,17 +58,18 @@ def validateMetadata(metadataFileDict):
     keyList = getNonMetadataKeys(metadataFileDict)
 
     # checks
-    binaryLabels = ['labelTrain', 'labelVal', 'labelTest']
+    dataSubsetKeys = ['labelTrain', 'labelVal', 'labelTest']
     assert(len(set([len(metadata[key]) for key in keyList])) == 1) # All records of same length
-    assert(len(set.difference(set(binaryLabels), set(keyList))) == 0) # 3 Labels exist
-    assert(all(map(lambda key: set(metadata[key].squeeze().tolist()) == set([0, 1]), binaryLabels))) # binary labels
-    assert(all(map(lambda x: x==1, sum(map(lambda key: metadata[key], binaryLabels))))) # Sum to 1
+    assert(len(set.difference(set(dataSubsetKeys), set(keyList))) == 0) # 3 keys exist
+    assert(all(map(lambda key: set(metadata[key].squeeze().tolist()) == set([0, 1]), dataSubsetKeys))) # binary labels
+    assert(all(map(lambda x: x==1, sum(map(lambda key: metadata[key], dataSubsetKeys))))) # Sum to 1
 
 if __name__ == "__main__":
 
     metadataFilePath = sys.argv[1] if len(sys.argv) > 1 else '../../temp/revisedMetaFinal.mat'
     saveFilePath = sys.argv[2] if len(sys.argv) > 2 else 'sampledMetadata.mat'
-    sampleFraction = float(sys.argv[3]) if len(sys.argv) > 3 else SAMPLE_FRACTION
+    sampledIndicesFilePath = sys.argv[3] if len(sys.argv) > 3 else 'sampledIndices.mat'
+    sampleFraction = float(sys.argv[4]) if len(sys.argv) > 4 else SAMPLE_FRACTION
 
     # read metadata
     metadata = readMetadata(metadataFilePath)
@@ -80,7 +78,12 @@ if __name__ == "__main__":
     validateMetadata(metadata)
 
     # sample
-    sampledMetadata = sampleMetadata(metadata, sampleFraction)
+    samplingIndices = getMetadataSamplingIndices(metadata, sampleFraction)
+    sampledMetadata = getMetadataForIndices(metadata, samplingIndices)
 
     # write
     writeMetadata(saveFilePath, sampledMetadata)
+    if sampledIndicesFilePath:
+        indicesDict = {}
+        indicesDict['samplingIndices'] = samplingIndices
+        writeMetadata(sampledIndicesFilePath, indicesDict)
