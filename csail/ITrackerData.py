@@ -39,10 +39,20 @@ NOTE: This file has been slightly modified to be used with Preferential looking 
 # META_PATH = '../WIP/metadata.mat'
 # LABEL_PATH = '../WIP/metadata_LR.mat'
 
-DATASET_PATH = '../../resized/'
+# DATASET_PATH = '../../resized/'
+# MEAN_PATH = '../csail/'
+# META_PATH = '../../resized/reference_metadata.mat'
+# LABEL_PATH = '../../Labels/resized_metadata_LR.mat'
+
+DATASET_PATH = '../../temp/'
 MEAN_PATH = '../csail/'
-META_PATH = '../../resized/reference_metadata.mat'
-LABEL_PATH = '../../Labels/resized_metadata_LR.mat'
+META_PATH = '../../Sampled/sampledMetadata.mat'
+LABEL_PATH = '../../Sampled/sampled_metadata_LR.mat'
+
+# DATASET_PATH = '../../resized/'
+# MEAN_PATH = '../csail/'
+# META_PATH = '../../Sampled/sampledResizedMetadata.mat'
+# LABEL_PATH = '../../Sampled/sampled_resized_metadata_LR.mat'
 
 def loadMetadata(filename, silent = False):
     try:
@@ -86,17 +96,17 @@ class ITrackerData(data.Dataset):
         self.labeldata = loadMetadata(LABEL_PATH)
 
         self.transformFace = transforms.Compose([
-            # transforms.Scale(self.imSize),
+            transforms.Scale(self.imSize),
             transforms.ToTensor(),
             SubtractMean(meanImg=self.faceMean),
         ])
         self.transformEyeL = transforms.Compose([
-            # transforms.Scale(self.imSize),
+            transforms.Scale(self.imSize),
             transforms.ToTensor(),
             SubtractMean(meanImg=self.eyeLeftMean),
         ])
         self.transformEyeR = transforms.Compose([
-            # transforms.Scale(self.imSize),
+            transforms.Scale(self.imSize),
             transforms.ToTensor(),
             SubtractMean(meanImg=self.eyeRightMean),
         ])
@@ -138,12 +148,12 @@ class ITrackerData(data.Dataset):
     def __getitem__(self, index):
         index = self.indices[index]
 
-        # imFacePath = os.path.join(DATASET_PATH, '%05d/tabFace/%d.jpg' % (self.metadata['labelRecNum'][index], self.metadata['frameIndex'][index]))
-        # imEyeLPath = os.path.join(DATASET_PATH, '%05d/tabLeftEye/%d.jpg' % (self.metadata['labelRecNum'][index], self.metadata['frameIndex'][index]))
-        # imEyeRPath = os.path.join(DATASET_PATH, '%05d/tabRightEye/%d.jpg' % (self.metadata['labelRecNum'][index], self.metadata['frameIndex'][index]))
-        imFacePath = os.path.join(DATASET_PATH, '%05d/appleFace/%05d.jpg' % (self.metadata['labelRecNum'][index], self.metadata['frameIndex'][index]))
-        imEyeLPath = os.path.join(DATASET_PATH, '%05d/appleLeftEye/%05d.jpg' % (self.metadata['labelRecNum'][index], self.metadata['frameIndex'][index]))
-        imEyeRPath = os.path.join(DATASET_PATH, '%05d/appleRightEye/%05d.jpg' % (self.metadata['labelRecNum'][index], self.metadata['frameIndex'][index]))
+        imFacePath = os.path.join(DATASET_PATH, '%05d/tabFace/%d.jpg' % (self.metadata['labelRecNum'][index], self.metadata['frameIndex'][index]))
+        imEyeLPath = os.path.join(DATASET_PATH, '%05d/tabLeftEye/%d.jpg' % (self.metadata['labelRecNum'][index], self.metadata['frameIndex'][index]))
+        imEyeRPath = os.path.join(DATASET_PATH, '%05d/tabRightEye/%d.jpg' % (self.metadata['labelRecNum'][index], self.metadata['frameIndex'][index]))
+        # imFacePath = os.path.join(DATASET_PATH, '%05d/appleFace/%05d.jpg' % (self.metadata['labelRecNum'][index], self.metadata['frameIndex'][index]))
+        # imEyeLPath = os.path.join(DATASET_PATH, '%05d/appleLeftEye/%05d.jpg' % (self.metadata['labelRecNum'][index], self.metadata['frameIndex'][index]))
+        # imEyeRPath = os.path.join(DATASET_PATH, '%05d/appleRightEye/%05d.jpg' % (self.metadata['labelRecNum'][index], self.metadata['frameIndex'][index]))
 
         imFace = self.loadImage(imFacePath)
         imEyeL = self.loadImage(imEyeLPath)
