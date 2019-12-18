@@ -116,7 +116,7 @@ class ITrackerModel(nn.Module):
         self.fc = nn.Sequential(
             nn.Linear(128+64+128, 128),
             nn.ReLU(inplace=True),
-            nn.Linear(128, 3),
+            nn.Linear(128, 4),
             )
 
     def forward(self, faces, eyesLeft, eyesRight, faceGrids):

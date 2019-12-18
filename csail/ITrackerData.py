@@ -47,12 +47,12 @@ NOTE: This file has been slightly modified to be used with Preferential looking 
 DATASET_PATH = '../../temp/'
 MEAN_PATH = '../csail/'
 META_PATH = '../../Sampled/sampledMetadata.mat'
-LABEL_PATH = '../../Sampled/sampled_metadata_LR.mat'
+LABEL_PATH = '../../Sampled/sampled_metadata_LCR.mat'
 
 # DATASET_PATH = '../../resized/'
 # MEAN_PATH = '../csail/'
 # META_PATH = '../../Sampled/sampledResizedMetadata.mat'
-# LABEL_PATH = '../../Sampled/sampled_resized_metadata_LR.mat'
+# LABEL_PATH = '../../Sampled/sampled_resized_metadata_LCR.mat'
 
 def loadMetadata(filename, silent = False):
     try:
@@ -163,7 +163,7 @@ class ITrackerData(data.Dataset):
         imEyeL = self.transformEyeL(imEyeL)
         imEyeR = self.transformEyeR(imEyeR)
 
-        gazeLabel = np.array([self.labeldata['labelDotLR'][index]], np.int)
+        gazeLabel = np.array([self.labeldata['labelDotLCR'][index]], np.int)
 
         faceGrid = self.makeGrid(self.metadata['labelFaceGrid'][index,:])
 
