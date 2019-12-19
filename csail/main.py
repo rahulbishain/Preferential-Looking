@@ -52,8 +52,9 @@ base_lr = 0.0001
 momentum = 0.9
 weight_decay = 1e-4
 print_freq = 10
-prec1 = 0
-best_prec1 = 1e20
+acc = 0
+best_acc = 1e20
+acc_arr = []
 lr = base_lr
 
 count_test = 0
@@ -62,7 +63,7 @@ count = 0
 
 
 def main():
-    global args, best_prec1, weight_decay, momentum
+    global args, best_acc, weight_decay, momentum
 
     external_module_name = "ITrackerModel"
     external_module_path = "../csail/ITrackerModel.py"
@@ -78,14 +79,14 @@ def main():
     if doLoad:
         saved = load_checkpoint()
         if saved:
-            print('Loading checkpoint for epoch %05d with error %.5f...' % (saved['epoch'], saved['best_prec1']))
+            print('Loading checkpoint for epoch %05d with error %.5f...' % (saved['epoch'], saved['best_acc']))
             state = saved['state_dict']
             try:
                 model.module.load_state_dict(state)
             except:
                 model.load_state_dict(state)
             epoch = saved['epoch']
-            best_prec1 = saved['best_prec1']
+            best_acc = saved['best_acc']
         else:
             print('Warning: Could not read checkpoint!')
 
@@ -127,15 +128,17 @@ def main():
         train(train_loader, model, criterion, optimizer, epoch)
 
         # evaluate on validation set
-        prec1 = validate(val_loader, model, criterion, epoch)
+        acc = validate(val_loader, model, criterion, epoch)
+        acc_arr.append(acc)
 
         # remember best prec@1 and save checkpoint
-        is_best = prec1 < best_prec1
-        best_prec1 = min(prec1, best_prec1)
+        is_best = acc < best_acc
+        best_acc = min(acc, best_acc)
         save_checkpoint({
             'epoch': epoch + 1,
             'state_dict': model.state_dict(),
-            'best_prec1': best_prec1,
+            'best_acc': best_acc,
+            'acc_arr': acc_arr,
         }, is_best)
 
 def train(train_loader, model, criterion,optimizer, epoch):
@@ -202,6 +205,7 @@ def validate(val_loader, model, criterion, epoch):
     data_time = AverageMeter()
     losses = AverageMeter()
     lossesLin = AverageMeter()
+    accuracies = AverageMeter()
 
     # switch to evaluate mode
     model.eval()
@@ -234,7 +238,9 @@ def validate(val_loader, model, criterion, epoch):
         gazeLabel = gazeLabel.squeeze()
         loss = criterion(output, gazeLabel)
 
-
+        # compute accuracy
+        tmp, outputLabel = torch.max(output, 1)
+        accuracy = sum(outputLabel == gazeLabel).float()/len(outputLabel)
 
         # final_loss = torch.cat((final_loss,torch.cuda.FloatTensor([loss.data])))
 
@@ -245,6 +251,7 @@ def validate(val_loader, model, criterion, epoch):
         # lossLin = torch.mean(torch.sqrt(lossLin))
 
         losses.update(loss.item(), imFace.size(0))
+        accuracies.update(accuracy.item(), imFace.size(0))
 
         # lossesLin.update(lossLin.data[0], imFace.size(0))
     
@@ -264,15 +271,18 @@ def validate(val_loader, model, criterion, epoch):
         print('Epoch (val)  : [{0}][{1}/{2}]\t'
                 # '[{3}/{4}]\t'
                 'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
+                'Data {data_time.val:.3f} ({data_time.avg:.3f})\t'
+                'Accuracy {accuracy.val:.4f} ({accuracy.avg:.4f})\t'
                 'Loss {loss.val:.4f} ({loss.avg:.4f})\t'.format( epoch, i, len(val_loader), 
                 # ','.join(map(str, recordNum.numpy())), ','.join(map(str, frameIndex.numpy())),
-                batch_time=batch_time, loss=losses))
+                batch_time=batch_time, data_time=data_time, accuracy=accuracies, loss=losses))
 
     
     # outfil.close()
     # return lossesLin.avg
     #print(final_output)
-    return losses.avg
+    return accuracies.avg
+
 
 CHECKPOINTS_PATH = '../csail/'
 
