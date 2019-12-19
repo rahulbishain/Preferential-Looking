@@ -286,7 +286,7 @@ def validate(val_loader, model, criterion, epoch):
 
 CHECKPOINTS_PATH = '../csail/'
 
-def load_checkpoint(filename='checkpoint.pth.tar'):
+def load_checkpoint(filename='checkpoint__2.pth.tar'):
     filename = os.path.join(CHECKPOINTS_PATH, filename)
     print(filename)
     if not os.path.isfile(filename):
@@ -294,7 +294,7 @@ def load_checkpoint(filename='checkpoint.pth.tar'):
     state = torch.load(filename)
     return state
 
-def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
+def save_checkpoint(state, is_best, filename='checkpoint__2.pth.tar'):
     if not os.path.isdir(CHECKPOINTS_PATH):
         os.makedirs(CHECKPOINTS_PATH, 0o777)
     bestFilename = os.path.join(CHECKPOINTS_PATH, 'best_' + filename)

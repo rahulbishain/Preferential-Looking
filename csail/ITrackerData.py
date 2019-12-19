@@ -44,10 +44,10 @@ NOTE: This file has been slightly modified to be used with Preferential looking 
 # META_PATH = '../../resized/reference_metadata.mat'
 # LABEL_PATH = '../../Labels/resized_metadata_LR.mat'
 
-DATASET_PATH = '../../temp/'
+DATASET_PATH = '../../temp__2/'
 MEAN_PATH = '../csail/'
 META_PATH = '../../Sampled/sampledMetadata.mat'
-LABEL_PATH = '../../Sampled/sampled_metadata_LCR.mat'
+LABEL_PATH = '../../Sampled/sampled_metadata_LR.mat'
 
 # DATASET_PATH = '../../resized/'
 # MEAN_PATH = '../csail/'
@@ -163,7 +163,7 @@ class ITrackerData(data.Dataset):
         imEyeL = self.transformEyeL(imEyeL)
         imEyeR = self.transformEyeR(imEyeR)
 
-        gazeLabel = np.array([self.labeldata['labelDotLCR'][index]], np.int)
+        gazeLabel = np.array([self.labeldata['labelDotLR'][index]], np.int)
 
         faceGrid = self.makeGrid(self.metadata['labelFaceGrid'][index,:])
 
