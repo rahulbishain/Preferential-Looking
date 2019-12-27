@@ -44,10 +44,10 @@ NOTE: This file has been slightly modified to be used with Preferential looking 
 # META_PATH = '../../resized/reference_metadata.mat'
 # LABEL_PATH = '../../Labels/resized_metadata_LR.mat'
 
-DATASET_PATH = '../../temp__2/'
+DATASET_PATH = '../../temp/'
 MEAN_PATH = '../csail/'
-META_PATH = '../../Sampled/sampledMetadata.mat'
-LABEL_PATH = '../../Sampled/sampled_metadata_LR.mat'
+META_PATH = '../data/sampled/sampledMetadata.mat'
+LABEL_PATH = '../data/sampled/sampled_metadata_LR.mat'
 
 # DATASET_PATH = '../../resized/'
 # MEAN_PATH = '../csail/'
