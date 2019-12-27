@@ -53,7 +53,7 @@ momentum = 0.9
 weight_decay = 1e-4
 print_freq = 10
 acc = 0
-best_acc = 1e20
+best_acc = 1e-20
 acc_arr = []
 lr = base_lr
 
@@ -132,8 +132,8 @@ def main():
         acc_arr.append(acc)
 
         # remember best prec@1 and save checkpoint
-        is_best = acc < best_acc
-        best_acc = min(acc, best_acc)
+        is_best = acc > best_acc
+        best_acc = max(acc, best_acc)
         save_checkpoint({
             'epoch': epoch + 1,
             'state_dict': model.state_dict(),
