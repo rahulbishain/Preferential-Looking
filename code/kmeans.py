@@ -27,7 +27,7 @@ from sklearn.cluster import KMeans
 import os
 import numpy as np
 
-srcdir = "data/input/"
+srcdir = "../data/input/"
 srcfile = "output_file.csv"
 srcoutfile1 = "output_with_clustering.csv"
 '''
@@ -80,7 +80,7 @@ def getMeans(infile):
     centroids = kmeans.cluster_centers_
     centroids = list((centroids[0,0],centroids[1,0]))
     centroids.sort()
-    labelmap = {kmeans.predict(centroids[0])[0]:0, kmeans.predict(centroids[1])[0]:1}
+    labelmap = {kmeans.predict(centroids[0].reshape(-1,1))[0]:0, kmeans.predict(centroids[1].reshape(-1,1))[0]:1}
     predLabel = []
     for row in data:
         tempRow = list(map(float,row.split()))
@@ -90,7 +90,7 @@ def getMeans(infile):
             predLabel.append(2)
             continue
         '''
-        predLabel.append(labelmap[kmeans.predict(tempRow[-3])[0]])
+        predLabel.append(labelmap[kmeans.predict([[tempRow[-3]]])[0]])
 #    print(labelmap)
 #    print(centroids) 
     
