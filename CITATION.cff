@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use our work, please cite it as below."
+authors:
+- family-names: "Bishain"
+  given-names: "Rahul"
+title: "Preferential Looking Code"
+version: 1
+date-released: 2022-04-20
+url: "https://insar.confex.com/insar/2019/webprogram/Paper31575.html"
+preferred-citation:
+  type: Poster
+  authors:
+  - family-names: "Dubey"
+  given-names: "Indu"
