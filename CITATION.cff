@@ -13,7 +13,5 @@ preferred-citation:
   - family-names: "Dubey"
   given-names: "Indu"
   conference: "INSAR"
-  month: 5
-  year: 2019
   title: "An Open-Source, Computing Platform-Agnostic, Calibration-Free Preferential Gaze Detection Approach for Social Preference Assessment"
   url: "https://insar.confex.com/insar/2019/webprogram/Paper31575.html"
